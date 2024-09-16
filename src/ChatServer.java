@@ -7,19 +7,34 @@ import java.io.PrintWriter;
 public class ChatServer {
 
     private static final int PORTA = 1234;
-
-    // Usando CopyOnWriteArraySet para evitar problemas de concorrência
+    private static ChatServer instancia;
     private static Set<PrintWriter> escritores = new CopyOnWriteArraySet<>();
 
+    // Padrão Singleton para garantir que só exista um ChatServer
+    private ChatServer() {
+    }
+
+    public static synchronized ChatServer getInstancia() {
+        if (instancia == null) {
+            instancia = new ChatServer();
+        }
+        return instancia;
+    }
+
     public static void main(String[] args) {
+        ChatServer server = ChatServer.getInstancia();
+        server.iniciar();
+    }
+
+    private void iniciar() {
         try {
-            ServerSocket server = new ServerSocket(PORTA);
+            ServerSocket serverSocket = new ServerSocket(PORTA);
             System.out.println("Servidor rodando na porta " + PORTA + "...");
             while (true) {
-                new ChatClient(server.accept(), escritores).start();
+                new ChatClient(serverSocket.accept(), escritores).start();
             }
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
