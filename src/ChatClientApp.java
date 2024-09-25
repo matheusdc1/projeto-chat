@@ -13,9 +13,7 @@ public class ChatClientApp {
         Scanner scanner = new Scanner(System.in);
         String usuario = scanner.nextLine();
 
-        /* Substitua o "localhost" pelo endereço IP do servidor na rede local, e crie este código no outro computador
-         Socket socket = new Socket("192.168.x.x", 1234);
-         Aqui é onde você coloca o IP do servidor, utilize ipconfig no cmd*/ 
+        
         try (Socket socket = new Socket("localhost", 1234);
                 BufferedReader leitor = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 PrintWriter escritor = new PrintWriter(socket.getOutputStream(), true)) {
@@ -24,7 +22,7 @@ public class ChatClientApp {
             escritor.println(usuario);
             escritor.flush();
 
-            // Thread para receber mensagens do servidor
+            
             Thread receptor = new Thread(() -> {
                 try {
                     String mensagemRecebida;
@@ -37,19 +35,19 @@ public class ChatClientApp {
             });
             receptor.start();
 
-            // Loop para enviar mensagens
+            
             while (true) {
                 Thread.sleep(300);
                 System.out.println("Escreva uma mensagem: ");
                 String mensagem = scanner.nextLine();
 
                 if (mensagem.equalsIgnoreCase("sair")) {
-                    socket.close(); // Fechar o socket ao sair
+                    socket.close(); 
                     break;
                 }
 
                 escritor.println(mensagem);
-                escritor.flush(); // Garantir que a mensagem seja enviada
+                escritor.flush(); 
             }
 
             System.out.println("Saindo do chat...");

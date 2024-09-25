@@ -48,7 +48,7 @@ public class ChatClient extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            // Fechar recursos corretamente
+
             try {
                 if (leitor != null)
                     leitor.close();
